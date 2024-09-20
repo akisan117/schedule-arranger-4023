@@ -108,7 +108,7 @@ app.post("/", ensureAuthenticated(), scheduleFormValidator, async (c) => {
 app.get("/:scheduleId", ensureAuthenticated(), scheduleIdValidator, async (c) => {
   const { user } = c.get("session") ?? {};
   const schedule = await prisma.schedule.findUnique({
-    where: { scheduleId: c.req.valid("param") },
+    where: { scheduleId: c.req.valid("param").scheduleId },
     include: {
       user: {
         select: {
@@ -286,7 +286,7 @@ function isMine(userId, schedule) {
 app.get("/:scheduleId/edit", ensureAuthenticated(), scheduleIdValidator,async (c) => {
   const { user } = c.get("session") ?? {};
   const schedule = await prisma.schedule.findUnique({
-    where: { scheduleId: c.req.valid("param") },
+    where: { scheduleId: c.req.valid("param").scheduleId },
   });
   if (!isMine(user.id, schedule)) {
     return c.notFound();
@@ -349,7 +349,7 @@ app.get("/:scheduleId/edit", ensureAuthenticated(), scheduleIdValidator,async (c
 app.post("/:scheduleId/update", ensureAuthenticated(), scheduleIdValidator, async (c) => {
   const { user } = c.get("session") ?? {};
   const schedule = await prisma.schedule.findUnique({
-    where: { scheduleId: c.req.valid("param") },
+    where: { scheduleId: c.req.valid("param").scheduleId },
   });
   if (!isMine(user.id, schedule)) {
     return c.notFound();
@@ -385,7 +385,7 @@ app.deleteScheduleAggregate = deleteScheduleAggregate;
 app.post("/:scheduleId/delete", ensureAuthenticated(), scheduleIdValidator, async (c) => {
   const { user } = c.get("session") ?? {};
   const schedule = await prisma.schedule.findUnique({
-    where: { scheduleId: c.req.valid("param") },
+    where: { scheduleId: c.req.valid("param").scheduleId },
   });
   if (!isMine(user.id, schedule)) {
     return c.notFound();
